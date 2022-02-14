@@ -23,7 +23,7 @@ class ProbsAlgo:
 
     def make_predictions(self) -> List[List[int]]:
         predictions = []
-        classes = list(set(self.true_labels))
+        classes = sorted(set(self.true_labels))
 
         for i in range(self.n):
             predictions.append(choices(classes, self.probs, k=len(self.true_labels)))
