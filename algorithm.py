@@ -165,6 +165,7 @@ class ProbsAlgo:
     def plot_and_save_result(self, output_path: str) -> None:
         metrics = self.get_final_metrics()
         fig, axs = plt.subplots(len(metrics), figsize=(16, 14))
+        fig.tight_layout()
 
         i = 0
         for metric in metrics:
