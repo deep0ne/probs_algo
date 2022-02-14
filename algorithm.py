@@ -164,8 +164,7 @@ class ProbsAlgo:
 
     def plot_and_save_result(self, output_path: str) -> None:
         metrics = self.get_final_metrics()
-        fig, axs = plt.subplots(len(metrics), figsize=(16, 14))
-        fig.tight_layout()
+        fig, axs = plt.subplots(len(metrics), figsize=(16, 12))
 
         i = 0
         for metric in metrics:
@@ -173,4 +172,5 @@ class ProbsAlgo:
             axs[i].title.set_text(f'{metric}')
             i += 1
 
+        plt.subplots_adjust()
         plt.savefig(rf'{output_path}\final_results.png')
