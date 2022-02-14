@@ -6,7 +6,9 @@ from typing import List, Dict
 
 from matplotlib import pyplot as plt
 import seaborn as sns
+
 sns.set_style('darkgrid')
+
 
 class ProbsAlgo:
     def __init__(self, data_path: str, probs: List[float], n: int) -> None:
@@ -42,33 +44,32 @@ class ProbsAlgo:
     @staticmethod
     def accuracy(true_labels: List[int], predictions: List[int]) -> float:
         assert len(true_labels) == len(predictions) != 0
-        # return sum(pred==true for pred, true in zip(true_labels, predictions)
-        count = 0
-        for i in range(len(predictions)):
-            if predictions[i] == true_labels[i]:
-                count += 1
-        return count / len(predictions)
+
+        return sum(pred == true_pred for pred, true_pred in zip(true_labels, predictions)) \
+               / len(predictions)
 
     @staticmethod
     def precision(true_labels: List[int], predictions: List[int], class_number: int) -> float:
         assert len(true_labels) == len(predictions) != 0
-        tp, fp = 0, 0
-        for i in range(len(predictions)):
-            if predictions[i] == class_number and true_labels[i] == class_number:
-                tp += 1
-            if predictions[i] == class_number and true_labels[i] != class_number:
-                fp += 1
+
+        tp = sum(pred == true_pred == class_number\
+                 for pred, true_pred in zip(predictions, true_labels))
+
+        fp = sum(class_number == pred != true_pred\
+                 for pred, true_pred in zip(predictions, true_labels))
+
         return tp / (tp + fp)
 
     @staticmethod
     def recall(true_labels: List[int], predictions: List[int], class_number: int) -> float:
         assert len(true_labels) == len(predictions) != 0
-        tp, fn = 0, 0
-        for i in range(len(predictions)):
-            if predictions[i] == class_number and true_labels[i] == class_number:
-                tp += 1
-            if predictions[i] != class_number and true_labels[i] == class_number:
-                fn += 1
+
+        tp = sum(pred == true_pred == class_number \
+                 for pred, true_pred in zip(predictions, true_labels))
+
+        fn = sum(class_number == true_pred != pred\
+                 for pred, true_pred in zip(predictions, true_labels))
+
         return tp / (tp + fn)
 
     @staticmethod
@@ -104,26 +105,26 @@ class ProbsAlgo:
         #         recall_class_2 = metrics['recall_class_2'][i]
         #         continue
 
-            # accuracy += metrics['accuracy'][i]
-            # metrics['accuracy'][i] = accuracy / (i + 1)
-            #
-            # precision_class_0 += metrics['precision_class_0'][i]
-            # metrics['precision_class_0'][i] = precision_class_0 / (i + 1)
-            #
-            # precision_class_1 += metrics['precision_class_1'][i]
-            # metrics['precision_class_1'][i] = precision_class_1 / (i + 1)
-            #
-            # precision_class_2 += metrics['precision_class_2'][i]
-            # metrics['precision_class_2'][i] = precision_class_2 / (i + 1)
-            #
-            # recall_class_0 += metrics['recall_class_0'][i]
-            # metrics['recall_class_0'][i] = recall_class_0 / (i + 1)
-            #
-            # recall_class_1 += metrics['recall_class_1'][i]
-            # metrics['recall_class_1'][i] = recall_class_1 / (i + 1)
-            #
-            # recall_class_2 += metrics['recall_class_2'][i]
-            # metrics['recall_class_2'][i] = recall_class_2 / (i + 1)
+        # accuracy += metrics['accuracy'][i]
+        # metrics['accuracy'][i] = accuracy / (i + 1)
+        #
+        # precision_class_0 += metrics['precision_class_0'][i]
+        # metrics['precision_class_0'][i] = precision_class_0 / (i + 1)
+        #
+        # precision_class_1 += metrics['precision_class_1'][i]
+        # metrics['precision_class_1'][i] = precision_class_1 / (i + 1)
+        #
+        # precision_class_2 += metrics['precision_class_2'][i]
+        # metrics['precision_class_2'][i] = precision_class_2 / (i + 1)
+        #
+        # recall_class_0 += metrics['recall_class_0'][i]
+        # metrics['recall_class_0'][i] = recall_class_0 / (i + 1)
+        #
+        # recall_class_1 += metrics['recall_class_1'][i]
+        # metrics['recall_class_1'][i] = recall_class_1 / (i + 1)
+        #
+        # recall_class_2 += metrics['recall_class_2'][i]
+        # metrics['recall_class_2'][i] = recall_class_2 / (i + 1)
 
         return metrics
 
