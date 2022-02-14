@@ -1,3 +1,4 @@
+import os
 from collections import defaultdict
 from itertools import accumulate
 from random import choices
@@ -10,16 +11,21 @@ sns.set_style('darkgrid')
 class ProbsAlgo:
     def __init__(self, data_path: str, probs: List[float], n: int) -> None:
         self.data_path = data_path
-        self.true_labels = self.read_file(data_path)
+
         self.probs = probs
+        assert sum(probs) == 1, 'Probabilities must sum to 1'
+
+        self.true_labels = self.read_file(data_path)
         self.n = n
 
         self.preds = self.make_predictions()
         self.metrics = self.get_final_metrics()
 
     def read_file(self, path: str) -> List[int]:
+        assert os.path.isfile(path), 'There is no such file in the directory' \
+                                     ''
         with open(path, 'r') as file:
-            return [int(line.rstrip('\n')) for line in file]
+            return [int(line) for line in file]
 
     def make_predictions(self) -> List[List[int]]:
         predictions = []
@@ -35,6 +41,8 @@ class ProbsAlgo:
 
     @staticmethod
     def accuracy(true_labels: List[int], predictions: List[int]) -> float:
+        assert len(true_labels) == len(predictions) != 0
+        # return sum(pred==true for pred, true in zip(true_labels, predictions)
         count = 0
         for i in range(len(predictions)):
             if predictions[i] == true_labels[i]:
@@ -43,6 +51,7 @@ class ProbsAlgo:
 
     @staticmethod
     def precision(true_labels: List[int], predictions: List[int], class_number: int) -> float:
+        assert len(true_labels) == len(predictions) != 0
         tp, fp = 0, 0
         for i in range(len(predictions)):
             if predictions[i] == class_number and true_labels[i] == class_number:
@@ -53,6 +62,7 @@ class ProbsAlgo:
 
     @staticmethod
     def recall(true_labels: List[int], predictions: List[int], class_number: int) -> float:
+        assert len(true_labels) == len(predictions) != 0
         tp, fn = 0, 0
         for i in range(len(predictions)):
             if predictions[i] == class_number and true_labels[i] == class_number:
