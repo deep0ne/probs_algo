@@ -1,11 +1,11 @@
-from typing import List, Dict
-import random
+from collections import defaultdict
+from itertools import accumulate
 from random import choices
-import csv
+from typing import List, Dict
+
 from matplotlib import pyplot as plt
 import seaborn as sns
 sns.set_style('darkgrid')
-from itertools import accumulate
 
 class ProbsAlgo:
     def __init__(self, data_path: str, probs: List[float], n: int) -> None:
