@@ -33,7 +33,8 @@ class ProbsAlgo:
         classes = sorted(set(self.true_labels))
 
         for i in range(self.n):
-            predictions.append(choices(classes, self.probs, k=len(self.true_labels)))
+            predictions.append(choices(
+                classes, self.probs, k=len(self.true_labels)))
 
         assert len(predictions) == self.n
         for pred in predictions:
@@ -44,29 +45,35 @@ class ProbsAlgo:
     def accuracy(true_labels: List[int], predictions: List[int]) -> float:
         assert len(true_labels) == len(predictions) != 0
 
-        return sum(pred == true_pred for pred, true_pred in zip(true_labels, predictions)) \
-               / len(predictions)
+        return sum(pred == true_pred for pred, true_pred in
+                   zip(true_labels, predictions)) / len(predictions)
 
     @staticmethod
-    def precision(true_labels: List[int], predictions: List[int], class_number: int) -> float:
+    def precision(true_labels: List[int],
+                  predictions: List[int],
+                  class_number: int) -> float:
+
         assert len(true_labels) == len(predictions) != 0
 
-        tp = sum(pred == true_pred == class_number\
+        tp = sum(pred == true_pred == class_number
                  for pred, true_pred in zip(predictions, true_labels))
 
-        fp = sum(class_number == pred != true_pred\
+        fp = sum(class_number == pred != true_pred
                  for pred, true_pred in zip(predictions, true_labels))
 
         return tp / (tp + fp)
 
     @staticmethod
-    def recall(true_labels: List[int], predictions: List[int], class_number: int) -> float:
+    def recall(true_labels: List[int],
+               predictions: List[int],
+               class_number: int) -> float:
+
         assert len(true_labels) == len(predictions) != 0
 
-        tp = sum(pred == true_pred == class_number \
+        tp = sum(pred == true_pred == class_number
                  for pred, true_pred in zip(predictions, true_labels))
 
-        fn = sum(class_number == true_pred != pred\
+        fn = sum(class_number == true_pred != pred
                  for pred, true_pred in zip(predictions, true_labels))
 
         return tp / (tp + fn)
@@ -75,7 +82,7 @@ class ProbsAlgo:
         current_sum = 0
         for num, val in enumerate(metrics, start=1):
             current_sum += val
-            metrics[num-1] = current_sum / num
+            metrics[num - 1] = current_sum / num
         return metrics
 
     def get_final_metrics(self) -> Dict[str, List[float]]:
@@ -128,3 +135,4 @@ class ProbsAlgo:
 
         plt.subplots_adjust()
         plt.savefig(rf'{output_path}\final_results.png')
+
