@@ -24,8 +24,7 @@ class ProbsAlgo:
         self.metrics = self.get_final_metrics()
 
     def read_file(self, path: str) -> List[int]:
-        assert os.path.isfile(path), 'There is no such file in the directory' \
-                                     ''
+        assert os.path.isfile(path), 'There is no such file in the directory'
         with open(path, 'r') as file:
             return [int(line) for line in file]
 
