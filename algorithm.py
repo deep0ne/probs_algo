@@ -72,101 +72,45 @@ class ProbsAlgo:
 
         return tp / (tp + fn)
 
-    @staticmethod
-    def cumulative_average(n: int, metrics: Dict[str, List[float]]) -> Dict[str, List[float]]:
-
-        accuracy_cumsum = list(accumulate(metrics['accuracy']))
-        precision_class_0_cumsum = list(accumulate(metrics['precision_class_0']))
-        precision_class_1_cumsum = list(accumulate(metrics['precision_class_1']))
-        precision_class_2_cumsum = list(accumulate(metrics['precision_class_2']))
-        recall_class_0_cumsum = list(accumulate(metrics['recall_class_0']))
-        recall_class_1_cumsum = list(accumulate(metrics['recall_class_1']))
-        recall_class_2_cumsum = list(accumulate(metrics['recall_class_2']))
-
-        for i in range(n):
-            if i == 0:
-                continue
-            metrics['accuracy'][i] = accuracy_cumsum[i] / (i + 1)
-            metrics['precision_class_0'][i] = precision_class_0_cumsum[i] / (i + 1)
-            metrics['precision_class_1'][i] = precision_class_1_cumsum[i] / (i + 1)
-            metrics['precision_class_2'][i] = precision_class_2_cumsum[i] / (i + 1)
-            metrics['recall_class_0'][i] = recall_class_0_cumsum[i] / (i + 1)
-            metrics['recall_class_1'][i] = recall_class_1_cumsum[i] / (i + 1)
-            metrics['recall_class_2'][i] = recall_class_2_cumsum[i] / (i + 1)
-
-        # # for i in range(n):
-        #     if i == 0:
-        #         accuracy = metrics['accuracy'][i]
-        #         precision_class_0 = metrics['precision_class_0'][i]
-        #         precision_class_1 = metrics['precision_class_1'][i]
-        #         precision_class_2 = metrics['precision_class_2'][i]
-        #         recall_class_0 = metrics['recall_class_0'][i]
-        #         recall_class_1 = metrics['recall_class_1'][i]
-        #         recall_class_2 = metrics['recall_class_2'][i]
-        #         continue
-
-        # accuracy += metrics['accuracy'][i]
-        # metrics['accuracy'][i] = accuracy / (i + 1)
-        #
-        # precision_class_0 += metrics['precision_class_0'][i]
-        # metrics['precision_class_0'][i] = precision_class_0 / (i + 1)
-        #
-        # precision_class_1 += metrics['precision_class_1'][i]
-        # metrics['precision_class_1'][i] = precision_class_1 / (i + 1)
-        #
-        # precision_class_2 += metrics['precision_class_2'][i]
-        # metrics['precision_class_2'][i] = precision_class_2 / (i + 1)
-        #
-        # recall_class_0 += metrics['recall_class_0'][i]
-        # metrics['recall_class_0'][i] = recall_class_0 / (i + 1)
-        #
-        # recall_class_1 += metrics['recall_class_1'][i]
-        # metrics['recall_class_1'][i] = recall_class_1 / (i + 1)
-        #
-        # recall_class_2 += metrics['recall_class_2'][i]
-        # metrics['recall_class_2'][i] = recall_class_2 / (i + 1)
-
+    def cumulative_average(self, metrics: List[int]) -> List[int]:
+        current_sum = 0
+        for num, val in enumerate(metrics, start=1):
+            current_sum += val
+            metrics[num-1] = current_sum / num
         return metrics
 
     def get_final_metrics(self) -> Dict[str, List[float]]:
 
-        metrics = {
-            'accuracy': [],
-            'precision_class_0': [],
-            'precision_class_1': [],
-            'precision_class_2': [],
-            'recall_class_0': [],
-            'recall_class_1': [],
-            'recall_class_2': []
-        }
+        metrics = defaultdict(list)
         for i in range(self.n):
-            metrics['accuracy'].append(ProbsAlgo.accuracy(self.true_labels,
-                                                          self.preds[i]))
+            metrics['accuracy'].append(self.accuracy(self.true_labels,
+                                                     self.preds[i]))
 
-            metrics['precision_class_0'].append(ProbsAlgo.precision(self.true_labels,
-                                                                    self.preds[i],
-                                                                    class_number=0))
+            metrics['precision_class_0'].append(self.precision(self.true_labels,
+                                                               self.preds[i],
+                                                               class_number=0))
 
-            metrics['precision_class_1'].append(ProbsAlgo.precision(self.true_labels,
-                                                                    self.preds[i],
-                                                                    class_number=1))
+            metrics['precision_class_1'].append(self.precision(self.true_labels,
+                                                               self.preds[i],
+                                                               class_number=1))
 
-            metrics['precision_class_2'].append(ProbsAlgo.precision(self.true_labels,
-                                                                    self.preds[i],
-                                                                    class_number=2))
+            metrics['precision_class_2'].append(self.precision(self.true_labels,
+                                                               self.preds[i],
+                                                               class_number=2))
 
-            metrics['recall_class_0'].append(ProbsAlgo.recall(self.true_labels,
-                                                              self.preds[i],
-                                                              class_number=0))
+            metrics['recall_class_0'].append(self.recall(self.true_labels,
+                                                         self.preds[i],
+                                                         class_number=0))
 
-            metrics['recall_class_1'].append(ProbsAlgo.recall(self.true_labels,
-                                                              self.preds[i],
-                                                              class_number=1))
+            metrics['recall_class_1'].append(self.recall(self.true_labels,
+                                                         self.preds[i],
+                                                         class_number=1))
 
-            metrics['recall_class_2'].append(ProbsAlgo.recall(self.true_labels,
-                                                              self.preds[i],
-                                                              class_number=2))
-        metrics = ProbsAlgo.cumulative_average(self.n, metrics)
+            metrics['recall_class_2'].append(self.recall(self.true_labels,
+                                                         self.preds[i],
+                                                         class_number=2))
+        for metric in metrics:
+            metrics[metric] = self.cumulative_average(metrics[metric])
 
         assert len(metrics) == 7
         for metric in metrics.values():
